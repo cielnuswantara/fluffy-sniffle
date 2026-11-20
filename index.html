@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noir Magenta Studio — Haute Couture Dress-Up</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-noir: #070709;
+      --bg-panel: rgba(18, 15, 22, 0.85);
+      --bg-card: rgba(30, 24, 36, 0.7);
+      --magenta-core: #ff007f;
+      --magenta-bright: #ff3399;
+      --magenta-deep: #99004d;
+      --magenta-glow: rgba(255, 0, 127, 0.35);
+      --border-subtle: rgba(255, 0, 127, 0.22);
+      --border-active: #ff007f;
+      --text-main: #f8f5fa;
+      --text-muted: #a699b0;
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-noir);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(255, 0, 127, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(153, 0, 77, 0.18) 0%, transparent 45%);
+    }
+
+    /* ================= LOGIN / AUTH SCREEN ================= */
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: rgba(7, 7, 9, 0.92);
+      backdrop-filter: blur(18px);
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .auth-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 430px;
+      background: linear-gradient(145deg, rgba(24, 18, 30, 0.95), rgba(12, 10, 15, 0.98));
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 2.5rem 2.25rem;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 0, 127, 0.12);
+    }
+
+    .brand-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--magenta-bright);
+      border: 1px solid var(--border-subtle);
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+      background: rgba(255, 0, 127, 0.08);
+    }
+
+    .auth-title {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, #ffffff, #ff80bf);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .auth-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 0.3rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .auth-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.6rem;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.85rem;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .auth-tab.active {
+      background: var(--magenta-core);
+      color: #fff;
+      box-shadow: 0 4px 15px var(--magenta-glow);
+    }
+
+    .form-group {
+      margin-bottom: 1.15rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      font-weight: 500;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(10, 8, 13, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 0.8rem 1rem;
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 0.925rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--magenta-core);
+      box-shadow: 0 0 0 3px rgba(255, 0, 127, 0.18);
+    }
+
+    .auth-error {
+      color: #ff6b9d;
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+      min-height: 1.1rem;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 0.88rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--magenta-core), #c40062);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.925rem;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      box-shadow: 0 8px 24px var(--magenta-glow);
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(255, 0, 127, 0.5);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 1.25rem 0;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .divider span {
+      padding: 0 0.75rem;
+    }
+
+    .btn-guest {
+      width: 100%;
+      padding: 0.8rem;
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-guest:hover {
+      background: rgba(255, 0, 127, 0.1);
+      border-color: var(--magenta-core);
+    }
+
+    /* ================= MAIN STUDIO LAYOUT ================= */
+    .app-container {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 1.25rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.5rem;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      backdrop-filter: blur(12px);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .logo-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--magenta-core);
+      box-shadow: 0 0 14px var(--magenta-core);
+    }
+
+    .logo-area h1 {
+      font-family: var(--font-serif);
+      font-size: 1.35rem;
+      letter-spacing: 0.02em;
+    }
+
+    .logo-area span {
+      color: var(--magenta-core);
+      font-style: italic;
+    }
+
+    .user-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .stylist-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 0, 127, 0.12);
+      border: 1px solid var(--border-subtle);
+      padding: 0.45rem 0.95rem;
+      border-radius: 999px;
+      font-size: 0.825rem;
+      font-weight: 600;
+    }
+
+    .btn-outline-sm {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--text-muted);
+      padding: 0.45rem 0.9rem;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-outline-sm:hover {
+      border-color: var(--magenta-core);
+      color: #fff;
+    }
+
+    /* Main Workspace Grid */
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 1fr 440px;
+      gap: 1.5rem;
+      flex: 1;
+    }
+
+    /* Left Stage: Avatar Runway */
+    .stage-panel {
+      position: relative;
+      border-radius: 24px;
+      border: 1px solid var(--border-subtle);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.5rem;
+      min-height: 620px;
+      transition: background 0.4s ease;
+    }
+
+    /* Stage Themes */
+    .stage-studio {
+      background: radial-gradient(circle at 50% 45%, #2a1224 0%, #0d0a10 75%);
+    }
+    .stage-runway {
+      background: linear-gradient(180deg, #160914 0%, #380b28 55%, #09070a 100%);
+    }
+    .stage-cyber {
+      background: radial-gradient(circle at 50% 35%, #420629 0%, #09080f 70%);
+    }
+    .stage-velvet {
+      background: linear-gradient(135deg, #1e0816 0%, #09070b 50%, #29091d 100%);
+    }
+
+    .stage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 5;
+    }
+
+    .theme-switcher {
+      display: flex;
+      gap: 0.45rem;
+      background: rgba(10, 8, 12, 0.7);
+      padding: 0.35rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .theme-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.35rem 0.7rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .theme-btn.active {
+      background: var(--magenta-core);
+      color: #fff;
+    }
+
+    .stage-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .icon-btn {
+      background: rgba(15, 12, 18, 0.8);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.5rem 0.85rem;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: var(--magenta-core);
+      border-color: var(--magenta-core);
+    }
+
+    .avatar-viewport {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 1rem 0;
+    }
+
+    .spotlight-ring {
+      position: absolute;
+      bottom: 18px;
+      width: 240px;
+      height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center, rgba(255, 0, 127, 0.45) 0%, transparent 72%);
+      border: 1px solid rgba(255, 0, 127, 0.3);
+      pointer-events: none;
+    }
+
+    #avatarSvg {
+      height: 470px;
+      width: auto;
+      z-index: 2;
+      filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.75));
+      transition: transform 0.3s ease;
+    }
+
+    .stage-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 5;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .skin-picker {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      background: rgba(12, 10, 15, 0.78);
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .skin-picker span {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-right: 0.2rem;
+    }
+
+    .swatch {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+
+    .swatch:hover {
+      transform: scale(1.15);
+    }
+
+    .swatch.active {
+      border-color: #fff;
+      box-shadow: 0 0 10px var(--magenta-core);
+    }
+
+    .btn-save-look {
+      background: linear-gradient(135deg, var(--magenta-core), #a80054);
+      border: none;
+      color: #fff;
+      padding: 0.65rem 1.25rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      box-shadow: 0 6px 20px var(--magenta-glow);
+    }
+
+    /* Right Panel: Wardrobe & Lookbook */
+    .wardrobe-panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      backdrop-filter: blur(14px);
+    }
+
+    .category-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .cat-btn {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      color: var(--text-muted);
+      padding: 0.5rem 0.85rem;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cat-btn.active {
+      background: var(--magenta-core);
+      color: #fff;
+      border-color: var(--magenta-core);
+      box-shadow: 0 4px 14px var(--magenta-glow);
+    }
+
+    .color-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10, 8, 13, 0.65);
+      padding: 0.65rem 0.9rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .color-bar-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .color-options {
+      display: flex;
+      gap: 0.45rem;
+    }
+
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      overflow-y: auto;
+      max-height: 360px;
+      padding-right: 0.25rem;
+    }
+
+    .item-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .item-card:hover {
+      border-color: rgba(255, 0, 127, 0.55);
+      transform: translateY(-2px);
+    }
+
+    .item-card.selected {
+      border-color: var(--magenta-core);
+      background: linear-gradient(145deg, rgba(255, 0, 127, 0.18), rgba(26, 20, 32, 0.9));
+      box-shadow: 0 0 18px rgba(255, 0, 127, 0.2);
+    }
+
+    .item-tag {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--magenta-bright);
+      font-weight: 700;
+    }
+
+    .item-name {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .item-desc {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    /* Saved Lookbook Strip */
+    .lookbook-section {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 0.9rem;
+    }
+
+    .lookbook-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      margin-bottom: 0.65rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .lookbook-list {
+      display: flex;
+      gap: 0.6rem;
+      overflow-x: auto;
+      padding-bottom: 0.35rem;
+    }
+
+    .look-chip {
+      flex: 0 0 auto;
+      background: rgba(255, 0, 127, 0.1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 0.5rem 0.8rem;
+      font-size: 0.78rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .look-chip:hover {
+      background: rgba(255, 0, 127, 0.24);
+    }
+
+    .look-del {
+      color: #ff80bf;
+      font-weight: bold;
+      margin-left: 0.25rem;
+    }
+
+    @media (max-width: 960px) {
+      .studio-grid {
+        grid-template-columns: 1fr;
+      }
+      .stage-panel {
+        min-height: 540px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= AUTH / LOGIN MODAL ================= -->
+  <div id="authOverlay" class="auth-overlay">
+    <div class="auth-card">
+      <span class="brand-badge">VIP Haute Couture</span>
+      <h2 class="auth-title">Noir Magenta Studio</h2>
+      <p class="auth-subtitle">Masuk untuk menyimpan koleksi busana eksklusif & lookbook pribadimu.</p>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchAuthMode('login')">Masuk Akun</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchAuthMode('register')">Daftar Stylist</button>
+      </div>
+
+      <form id="authForm" onsubmit="handleAuthSubmit(event)">
+        <div class="form-group">
+          <label for="usernameInput">Nama Stylist / Username</label>
+          <input type="text" id="usernameInput" class="form-input" placeholder="cth: MadameVogue" required />
+        </div>
+        <div class="form-group">
+          <label for="passwordInput">Kata Sandi</label>
+          <input type="password" id="passwordInput" class="form-input" placeholder="••••••••" required />
+        </div>
+        <div id="authError" class="auth-error"></div>
+        <button type="submit" class="btn-primary" id="authSubmitBtn">Masuk ke Studio</button>
+      </form>
+
+      <div class="divider"><span>ATAU</span></div>
+
+      <button type="button" class="btn-guest" onclick="loginAsGuest()">
+        Masuk Cepat sebagai Tamu (Demo VIP)
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= MAIN GAME STUDIO ================= -->
+  <div class="app-container">
+    <header class="topbar">
+      <div class="logo-area">
+        <div class="logo-dot"></div>
+        <h1>Noir <span>Magenta</span> Studio</h1>
+      </div>
+
+      <div class="user-controls">
+        <div class="stylist-pill">
+          <span>✦ Stylist:</span>
+          <strong id="displayUsername">Guest</strong>
+        </div>
+        <button class="btn-outline-sm" onclick="logout()">Keluar</button>
+      </div>
+    </header>
+
+    <main class="studio-grid">
+      <!-- LEFT: MODEL STAGE -->
+      <section id="stagePanel" class="stage-panel stage-studio">
+        <div class="stage-header">
+          <div class="theme-switcher">
+            <button class="theme-btn active" onclick="setStageTheme('studio', this)">Studio</button>
+            <button class="theme-btn" onclick="setStageTheme('runway', this)">Runway</button>
+            <button class="theme-btn" onclick="setStageTheme('cyber', this)">Cyber</button>
+            <button class="theme-btn" onclick="setStageTheme('velvet', this)">Velvet</button>
+          </div>
+
+          <div class="stage-actions">
+            <button class="icon-btn" onclick="randomizeOutfit()">✦ Acak Gaya</button>
+            <button class="icon-btn" onclick="downloadAvatarPNG()">⬇ Unduh PNG</button>
+          </div>
+        </div>
+
+        <div class="avatar-viewport">
+          <div class="spotlight-ring"></div>
+          <!-- VECTOR HIGH-FASHION MODEL SVG -->
+          <svg id="avatarSvg" viewBox="0 0 300 620" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="magentaSheen" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#ff3399" stop-opacity="0.45"/>
+                <stop offset="100%" stop-color="#140812" stop-opacity="0.2"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Back Hair Layer -->
+            <g id="layerHairBack"></g>
+
+            <!-- Body Silhouette -->
+            <g id="layerBody">
+              <!-- Neck -->
+              <path d="M138 118 L162 118 L165 152 L135 152 Z" fill="#e5b89b" class="skin-fill"/>
+              <!-- Torso & Arms -->
+              <path d="M112 155 C125 148, 175 148, 188 155 L206 275 L194 278 L178 178 L172 245 L184 315 L116 315 L128 245 L122 178 L106 278 L94 275 Z" fill="#e5b89b" class="skin-fill"/>
+              <!-- Legs -->
+              <path d="M118 312 L147 312 L144 555 L130 555 L122 425 Z" fill="#e5b89b" class="skin-fill"/>
+              <path d="M153 312 L182 312 L178 425 L170 555 L156 555 Z" fill="#e5b89b" class="skin-fill"/>
+              <!-- Head -->
+              <ellipse cx="150" cy="86" rx="28" ry="36" fill="#e5b89b" class="skin-fill"/>
+              <!-- Editorial Makeup & Eyes -->
+              <path d="M133 82 Q140 77 146 82" stroke="#18121e" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+              <path d="M154 82 Q160 77 167 82" stroke="#18121e" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+              <circle cx="140" cy="83" r="2.5" fill="#18121e"/>
+              <circle cx="160" cy="83" r="2.5" fill="#18121e"/>
+              <!-- Winged Eyeliner -->
+              <path d="M131 81 L136 82" stroke="#ff007f" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M164 82 L169 81" stroke="#ff007f" stroke-width="1.8" stroke-linecap="round"/>
+              <!-- Magenta Couture Lips -->
+              <path d="M143 103 Q150 99 157 103 Q150 109 143 103 Z" fill="#ff007f"/>
+            </g>
+
+            <!-- Clothing & Accessory Layers -->
+            <g id="layerShoes"></g>
+            <g id="layerBottom"></g>
+            <g id="layerTop"></g>
+            <g id="layerDress"></g>
+            <g id="layerAccessories"></g>
+            <g id="layerHairFront"></g>
+          </svg>
+        </div>
+
+        <div class="stage-footer">
+          <div class="skin-picker">
+            <span>Tone Kulit:</span>
+            <button class="swatch active" style="background:#f3cfb6" onclick="setSkinTone('#f3cfb6', this)"></button>
+            <button class="swatch" style="background:#e5b89b" onclick="setSkinTone('#e5b89b', this)"></button>
+            <button class="swatch" style="background:#c68b63" onclick="setSkinTone('#c68b63', this)"></button>
+            <button class="swatch" style="background:#8d5538" onclick="setSkinTone('#8d5538', this)"></button>
+            <button class="swatch" style="background:#543121" onclick="setSkinTone('#543121', this)"></button>
+          </div>
+
+          <button class="btn-save-look" onclick="saveCurrentLook()">+ Simpan ke Lookbook</button>
+        </div>
+      </section>
+
+      <!-- RIGHT: WARDROBE CONTROLS -->
+      <aside class="wardrobe-panel">
+        <div class="category-tabs">
+          <button class="cat-btn active" onclick="selectCategory('hair', this)">Rambut</button>
+          <button class="cat-btn" onclick="selectCategory('dress', this)">Gaun Couture</button>
+          <button class="cat-btn" onclick="selectCategory('top', this)">Atasan</button>
+          <button class="cat-btn" onclick="selectCategory('bottom', this)">Bawahan</button>
+          <button class="cat-btn" onclick="selectCategory('shoes', this)">Sepatu</button>
+          <button class="cat-btn" onclick="selectCategory('acc', this)">Aksesoris</button>
+        </div>
+
+        <div class="color-bar">
+          <span class="color-bar-label">Warna Item Aktif:</span>
+          <div class="color-options" id="colorPalette"></div>
+        </div>
+
+        <div class="items-grid" id="itemsGrid"></div>
+
+        <div class="lookbook-section">
+          <div class="lookbook-title">
+            <span>Lookbook Tersimpan</span>
+            <span id="lookCount">0 Gaya</span>
+          </div>
+          <div class="lookbook-list" id="lookbookList"></div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    /* ================= DATA & WARDROBE CATALOG ================= */
+    const COLOR_PALETTE = [
+      { name: 'Noir Black', hex: '#141118' },
+      { name: 'Neon Magenta', hex: '#ff007f' },
+      { name: 'Deep Crimson', hex: '#99004d' },
+      { name: 'Blush Rose', hex: '#ff80bf' },
+      { name: 'Platinum Silver', hex: '#e2dce8' },
+      { name: 'Midnight Plum', hex: '#3a0ca3' }
+    ];
+
+    const CATALOG = {
+      hair: [
+        { id: 'h_sleek', name: 'Sleek Runway Bob', tag: 'Editorial', desc: 'Potongan bob tajam berkelas' },
+        { id: 'h_waves', name: 'Hollywood Waves', tag: 'Glamour', desc: 'Rambut panjang bergelombang' },
+        { id: 'h_highpony', name: 'High Couture Ponytail', tag: 'Edgy', desc: 'Kuncir tinggi dramatis' },
+        { id: 'h_bun', name: 'Noir Chignon Bun', tag: 'Minimalist', desc: 'Sanggul malam yang anggun' }
+      ],
+      dress: [
+        { id: 'd_none', name: 'Tanpa Gaun (Mix & Match)', tag: 'Separates', desc: 'Gunakan atasan & bawahan' },
+        { id: 'd_slip', name: 'Satin Midnight Slip', tag: 'Evening', desc: 'Gaun satin belahan tinggi' },
+        { id: 'd_gown', name: 'Magenta Opera Gown', tag: 'Haute Couture', desc: 'Gaun panjang dramatis' },
+        { id: 'd_corset', name: 'Velvet Corset Mini', tag: 'Cocktail', desc: 'Gaun mini korset terstruktur' }
+      ],
+      top: [
+        { id: 't_none', name: 'Kosong', tag: 'Base', desc: 'Lepas atasan' },
+        { id: 't_bustier', name: 'Noir Lace Bustier', tag: 'Luxe', desc: 'Korset bustier elegan' },
+        { id: 't_blazer', name: 'Cropped Tuxedo Blazer', tag: 'Power', desc: 'Blazer bahu tegas modern' },
+        { id: 't_halter', name: 'Silk Halter Neck', tag: 'Chic', desc: 'Atasan halter sutra minimalis' }
+      ],
+      bottom: [
+        { id: 'b_none', name: 'Kosong', tag: 'Base', desc: 'Lepas bawahan' },
+        { id: 'b_pencil', name: 'High-Slit Pencil Skirt', tag: 'Runway', desc: 'Rok pensil belahan samping' },
+        { id: 'b_trousers', name: 'Tailored Wide Trousers', tag: 'Avant-Garde', desc: 'Celana palazzo potongan tinggi' },
+        { id: 'b_mini', name: 'Pleated Noir Mini', tag: 'Night Out', desc: 'Rok mini lipit modern' }
+      ],
+      shoes: [
+        { id: 's_none', name: 'Tanpa Alas Kaki', tag: 'Bare', desc: 'Lepas sepatu' },
+        { id: 's_stiletto', name: 'Pointed Stiletto Heels', tag: 'Classic', desc: 'Hak tinggi runcing ikonik' },
+        { id: 's_boots', name: 'Over-Knee Leather Boots', tag: 'Bold', desc: 'Sepatu bot tinggi dramatis' }
+      ],
+      acc: [
+        { id: 'a_none', name: 'Tanpa Aksesoris', tag: 'Clean', desc: 'Tampilan bersih' },
+        { id: 'a_choker', name: 'Diamond & Magenta Choker', tag: 'Statement', desc: 'Kalung choker berkilau' },
+        { id: 'a_shades', name: 'Noir Cat-Eye Sunglasses', tag: 'Diva', desc: 'Kacamata hitam tajam' },
+        { id: 'a_gloves', name: 'Opera Satin Gloves', tag: 'Vintage', desc: 'Sarung tangan panjang malam' }
+      ]
+    };
+
+    let currentUser = null;
+    let authMode = 'login';
+    let activeCategory = 'hair';
+
+    let outfitState = {
+      skin: '#e5b89b',
+      hair: { id: 'h_waves', color: '#141118' },
+      dress: { id: 'd_slip', color: '#ff007f' },
+      top: { id: 't_none', color: '#141118' },
+      bottom: { id: 'b_none', color: '#141118' },
+      shoes: { id: 's_stiletto', color: '#ff007f' },
+      acc: { id: 'a_choker', color: '#ff007f' }
+    };
+
+    /* ================= AUTHENTICATION LOGIC ================= */
+    function switchAuthMode(mode) {
+      authMode = mode;
+      document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
+      document.getElementById('tabRegister').classList.toggle('active', mode === 'register');
+      document.getElementById('authSubmitBtn').textContent =
+        mode === 'login' ? 'Masuk ke Studio' : 'Buat Akun & Masuk';
+      document.getElementById('authError').textContent = '';
+    }
+
+    function getUsersDB() {
+      return JSON.parse(localStorage.getItem('nms_users') || '{}');
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const username = document.getElementById('usernameInput').value.trim();
+      const password = document.getElementById('passwordInput').value.trim();
+      const errEl = document.getElementById('authError');
+
+      if (username.length < 3 || password.length < 4) {
+        errEl.textContent = 'Username minimal 3 karakter & sandi minimal 4 karakter.';
+        return;
+      }
+
+      const users = getUsersDB();
+
+      if (authMode === 'register') {
+        if (users[username.toLowerCase()]) {
+          errEl.textContent = 'Username sudah terdaftar. Silakan masuk.';
+          return;
+        }
+        users[username.toLowerCase()] = { displayName: username, password };
+        localStorage.setItem('nms_users', JSON.stringify(users));
+        completeLogin(username);
+      } else {
+        const record = users[username.toLowerCase()];
+        if (!record || record.password !== password) {
+          errEl.textContent = 'Username atau kata sandi salah.';
+          return;
+        }
+        completeLogin(record.displayName);
+      }
+    }
+
+    function loginAsGuest() {
+      completeLogin('VIP Guest');
+    }
+
+    function completeLogin(displayName) {
+      currentUser = displayName;
+      localStorage.setItem('nms_active_session', displayName);
+      document.getElementById('displayUsername').textContent = displayName;
+      document.getElementById('authOverlay').classList.add('hidden');
+      renderLookbook();
+    }
+
+    function logout() {
+      localStorage.removeItem('nms_active_session');
+      currentUser = null;
+      document.getElementById('authOverlay').classList.remove('hidden');
+    }
+
+    /* ================= AVATAR RENDERING ENGINE ================= */
+    function renderAvatar() {
+      // Skin
+      document.querySelectorAll('.skin-fill').forEach(el => {
+        el.setAttribute('fill', outfitState.skin);
+      });
+
+      // Hair
+      const hBack = document.getElementById('layerHairBack');
+      const hFront = document.getElementById('layerHairFront');
+      const hc = outfitState.hair.color;
+      hBack.innerHTML = '';
+      hFront.innerHTML = '';
+
+      if (outfitState.hair.id === 'h_sleek') {
+        hBack.innerHTML = `<path d="M116 75 Q150 38 184 75 L190 142 L110 142 Z" fill="${hc}"/>`;
+        hFront.innerHTML = `<path d="M122 76 Q150 52 178 76 Q172 64 150 64 Q128 64 122 76 Z" fill="${hc}"/>`;
+      } else if (outfitState.hair.id === 'h_waves') {
+        hBack.innerHTML = `<path d="M114 75 C102 135, 98 205, 114 255 L186 255 C202 205, 198 135, 186 75 Z" fill="${hc}"/>`;
+        hFront.innerHTML = `<path d="M120 82 C125 48, 175 48, 180 82 C168 62, 132 62, 120 82 Z" fill="${hc}"/>`;
+      } else if (outfitState.hair.id === 'h_highpony') {
+        hBack.innerHTML = `<path d="M150 42 C185 35, 205 110, 192 185 C180 155, 170 95, 150 65 Z" fill="${hc}"/>`;
+        hFront.innerHTML = `<ellipse cx="150" cy="68" rx="30" ry="24" fill="${hc}"/>`;
+      } else if (outfitState.hair.id === 'h_bun') {
+        hBack.innerHTML = `<circle cx="150" cy="42" r="20" fill="${hc}"/>`;
+        hFront.innerHTML = `<path d="M121 80 C124 48, 176 48, 179 80 C166 64, 134 64, 121 80 Z" fill="${hc}"/>`;
+      }
+
+      // Dress vs Top/Bottom
+      const dLayer = document.getElementById('layerDress');
+      const tLayer = document.getElementById('layerTop');
+      const bLayer = document.getElementById('layerBottom');
+      dLayer.innerHTML = '';
+      tLayer.innerHTML = '';
+      bLayer.innerHTML = '';
+
+      if (outfitState.dress.id !== 'd_none') {
+        const dc = outfitState.dress.color;
+        if (outfitState.dress.id === 'd_slip') {
+          dLayer.innerHTML = `
+            <path d="M124 176 L176 176 L186 315 L194 465 L154 465 L150 365 L144 465 L108 465 L116 315 Z" fill="${dc}"/>
+            <path d="M124 176 L176 176 L186 315 L194 465 L154 465 L150 365 L144 465 L108 465 L116 315 Z" fill="url(#magentaSheen)"/>
+            <line x1="128" y1="152" x2="128" y2="178" stroke="${dc}" stroke-width="2.5"/>
+            <line x1="172" y1="152" x2="172" y2="178" stroke="${dc}" stroke-width="2.5"/>
+          `;
+        } else if (outfitState.dress.id === 'd_gown') {
+          dLayer.innerHTML = `
+            <path d="M122 175 Q150 188 178 175 L186 310 L218 545 L82 545 L114 310 Z" fill="${dc}"/>
+            <path d="M122 175 Q150 188 178 175 L186 310 L218 545 L82 545 L114 310 Z" fill="url(#magentaSheen)"/>
+          `;
+        } else if (outfitState.dress.id === 'd_corset') {
+          dLayer.innerHTML = `
+            <path d="M123 175 L177 175 L173 265 L192 365 L108 365 L127 265 Z" fill="${dc}"/>
+            <line x1="142" y1="180" x2="142" y2="262" stroke="rgba(255,255,255,0.28)" stroke-width="1.5"/>
+            <line x1="158" y1="180" x2="158" y2="262" stroke="rgba(255,255,255,0.28)" stroke-width="1.5"/>
+          `;
+        }
+      } else {
+        // Bottom
+        const bc = outfitState.bottom.color;
+        if (outfitState.bottom.id === 'b_pencil') {
+          bLayer.innerHTML = `<path d="M117 295 L183 295 L186 445 L155 445 L150 375 L146 445 L114 445 Z" fill="${bc}"/>`;
+        } else if (outfitState.bottom.id === 'b_trousers') {
+          bLayer.innerHTML = `
+            <path d="M117 292 L183 292 L192 545 L154 545 L150 350 L146 545 L108 545 Z" fill="${bc}"/>
+          `;
+        } else if (outfitState.bottom.id === 'b_mini') {
+          bLayer.innerHTML = `<path d="M118 295 L182 295 L192 365 L108 365 Z" fill="${bc}"/>`;
+        }
+
+        // Top
+        const tc = outfitState.top.color;
+        if (outfitState.top.id === 't_bustier') {
+          tLayer.innerHTML = `<path d="M123 178 Q150 190 177 178 L173 268 L127 268 Z" fill="${tc}"/>`;
+        } else if (outfitState.top.id === 't_blazer') {
+          tLayer.innerHTML = `
+            <path d="M110 155 L190 155 L206 276 L193 279 L177 182 L175 262 L125 262 L123 182 L107 279 L94 276 Z" fill="${tc}"/>
+            <path d="M136 155 L150 205 L164 155" fill="none" stroke="#ff007f" stroke-width="2"/>
+          `;
+        } else if (outfitState.top.id === 't_halter') {
+          tLayer.innerHTML = `<path d="M138 148 L162 148 L176 265 L124 265 Z" fill="${tc}"/>`;
+        }
+      }
+
+      // Shoes
+      const sLayer = document.getElementById('layerShoes');
+      const sc = outfitState.shoes.color;
+      sLayer.innerHTML = '';
+      if (outfitState.shoes.id === 's_stiletto') {
+        sLayer.innerHTML = `
+          <path d="M128 548 L145 548 L144 576 L124 576 Z" fill="${sc}"/>
+          <path d="M155 548 L172 548 L176 576 L156 576 Z" fill="${sc}"/>
+        `;
+      } else if (outfitState.shoes.id === 's_boots') {
+        sLayer.innerHTML = `
+          <path d="M123 415 L146 415 L144 576 L124 576 Z" fill="${sc}"/>
+          <path d="M154 415 L177 415 L176 576 L156 576 Z" fill="${sc}"/>
+        `;
+      }
+
+      // Accessories
+      const aLayer = document.getElementById('layerAccessories');
+      const ac = outfitState.acc.color;
+      aLayer.innerHTML = '';
+      if (outfitState.acc.id === 'a_choker') {
+        aLayer.innerHTML = `
+          <rect x="136" y="132" width="28" height="6" rx="2" fill="${ac}"/>
+          <circle cx="150" cy="135" r="3.5" fill="#ffffff"/>
+        `;
+      } else if (outfitState.acc.id === 'a_shades') {
+        aLayer.innerHTML = `
+          <path d="M125 78 L147 80 L145 90 L127 88 Z" fill="#09070c" stroke="${ac}" stroke-width="1.8"/>
+          <path d="M153 80 L175 78 L173 88 L155 90 Z" fill="#09070c" stroke="${ac}" stroke-width="1.8"/>
+          <line x1="147" y1="81" x2="153" y2="81" stroke="${ac}" stroke-width="2"/>
+        `;
+      } else if (outfitState.acc.id === 'a_gloves') {
+        aLayer.innerHTML = `
+          <path d="M104 205 L117 207 L106 278 L94 275 Z" fill="${ac}"/>
+          <path d="M183 207 L196 205 L206 275 L194 278 Z" fill="${ac}"/>
+        `;
+      }
+    }
+
+    /* ================= WARDROBE UI CONTROLS ================= */
+    function selectCategory(cat, btn) {
+      activeCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderWardrobeItems();
+      renderColorPalette();
+    }
+
+    function renderColorPalette() {
+      const container = document.getElementById('colorPalette');
+      const currentColor = outfitState[activeCategory].color;
+      container.innerHTML = COLOR_PALETTE.map(c => `
+        <button 
+          class="swatch ${c.hex === currentColor ? 'active' : ''}" 
+          style="background:${c.hex}" 
+          title="${c.name}"
+          onclick="setItemColor('${c.hex}')">
+        </button>
+      `).join('');
+    }
+
+    function setItemColor(hex) {
+      outfitState[activeCategory].color = hex;
+      renderColorPalette();
+      renderAvatar();
+    }
+
+    function renderWardrobeItems() {
+      const grid = document.getElementById('itemsGrid');
+      const items = CATALOG[activeCategory];
+      const selectedId = outfitState[activeCategory].id;
+
+      grid.innerHTML = items.map(item => `
+        <div class="item-card ${item.id === selectedId ? 'selected' : ''}" onclick="equipItem('${item.id}')">
+          <span class="item-tag">${item.tag}</span>
+          <div class="item-name">${item.name}</div>
+          <div class="item-desc">${item.desc}</div>
+        </div>
+      `).join('');
+    }
+
+    function equipItem(itemId) {
+      outfitState[activeCategory].id = itemId;
+
+      // Smart rule: equipping a dress clears top/bottom, and vice-versa
+      if (activeCategory === 'dress' && itemId !== 'd_none') {
+        outfitState.top.id = 't_none';
+        outfitState.bottom.id = 'b_none';
+      } else if ((activeCategory === 'top' || activeCategory === 'bottom') && itemId !== 't_none' && itemId !== 'b_none') {
+        outfitState.dress.id = 'd_none';
+      }
+
+      renderWardrobeItems();
+      renderAvatar();
+    }
+
+    function setSkinTone(hex, btn) {
+      outfitState.skin = hex;
+      document.querySelectorAll('.skin-picker .swatch').forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      renderAvatar();
+    }
+
+    function setStageTheme(theme, btn) {
+      const stage = document.getElementById('stagePanel');
+      stage.className = `stage-panel stage-${theme}`;
+      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function randomizeOutfit() {
+      const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+      outfitState.hair = { id: pick(CATALOG.hair).id, color: pick(COLOR_PALETTE).hex };
+      outfitState.shoes = { id: pick(CATALOG.shoes.slice(1)).id, color: pick(COLOR_PALETTE).hex };
+      outfitState.acc = { id: pick(CATALOG.acc).id, color: pick(COLOR_PALETTE).hex };
+
+      if (Math.random() > 0.45) {
+        outfitState.dress = { id: pick(CATALOG.dress.slice(1)).id, color: pick(COLOR_PALETTE).hex };
+        outfitState.top.id = 't_none';
+        outfitState.bottom.id = 'b_none';
+      } else {
+        outfitState.dress.id = 'd_none';
+        outfitState.top = { id: pick(CATALOG.top.slice(1)).id, color: pick(COLOR_PALETTE).hex };
+        outfitState.bottom = { id: pick(CATALOG.bottom.slice(1)).id, color: pick(COLOR_PALETTE).hex };
+      }
+
+      renderWardrobeItems();
+      renderColorPalette();
+      renderAvatar();
+    }
+
+    /* ================= LOOKBOOK & PNG EXPORT ================= */
+    function getLookbookKey() {
+      return `nms_lookbook_${(currentUser || 'guest').toLowerCase()}`;
+    }
+
+    function saveCurrentLook() {
+      const list = JSON.parse(localStorage.getItem(getLookbookKey()) || '[]');
+      const name = `Look #${list.length + 1}`;
+      list.unshift({ name, state: JSON.parse(JSON.stringify(outfitState)) });
+      localStorage.setItem(getLookbookKey(), JSON.stringify(list.slice(0, 12)));
+      renderLookbook();
+    }
+
+    function renderLookbook() {
+      const list = JSON.parse(localStorage.getItem(getLookbookKey()) || '[]');
+      document.getElementById('lookCount').textContent = `${list.length} Gaya`;
+      const container = document.getElementById('lookbookList');
+
+      if (!list.length) {
+        container.innerHTML = `<span style="font-size:0.78rem;color:var(--text-muted)">Belum ada gaya tersimpan.</span>`;
+        return;
+      }
+
+      container.innerHTML = list.map((item, idx) => `
+        <div class="look-chip" onclick="loadLook(${idx})">
+          <span>✦ ${item.name}</span>
+          <span class="look-del" onclick="deleteLook(event, ${idx})">×</span>
+        </div>
+      `).join('');
+    }
+
+    function loadLook(index) {
+      const list = JSON.parse(localStorage.getItem(getLookbookKey()) || '[]');
+      if (list[index]) {
+        outfitState = JSON.parse(JSON.stringify(list[index].state));
+        renderWardrobeItems();
+        renderColorPalette();
+        renderAvatar();
+      }
+    }
+
+    function deleteLook(e, index) {
+      e.stopPropagation();
+      const list = JSON.parse(localStorage.getItem(getLookbookKey()) || '[]');
+      list.splice(index, 1);
+      localStorage.setItem(getLookbookKey(), JSON.stringify(list));
+      renderLookbook();
+    }
+
+    function downloadAvatarPNG() {
+      const svg = document.getElementById('avatarSvg');
+      const serializer = new XMLSerializer();
+      const svgStr = serializer.serializeToString(svg);
+      const canvas = document.createElement('canvas');
+      canvas.width = 600;
+      canvas.height = 1240;
+      const ctx = canvas.getContext('2d');
+
+      const img = new Image();
+      const blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+
+      img.onload = () => {
+        ctx.fillStyle = '#0d0912';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(url);
+
+        const a = document.createElement('a');
+        a.download = `noir-magenta-look-${Date.now()}.png`;
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+      };
+      img.src = url;
+    }
+
+    /* ================= INIT ================= */
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedSession = localStorage.getItem('nms_active_session');
+      if (savedSession) {
+        completeLogin(savedSession);
+      }
+      renderColorPalette();
+      renderWardrobeItems();
+      renderAvatar();
+    });
+  </script>
+</body>
+</html>
